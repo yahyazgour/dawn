@@ -1,0 +1,10 @@
+{{ 'video-element.css' | asset_url | stylesheet_tag }}
+
+<div class="custom-video-element" 
+    data-loop="{{ loop }}"
+    data-controls="{{ controls }}"
+    data-video-src="{{ video.sources[1].url }}"
+>
+</div>
+
+<script style="height: 0; width: 0;" src="{{ 'video-element.js' | asset_url }}" defer="defer"></script>
