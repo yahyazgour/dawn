@@ -12,6 +12,10 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
+
+  .custom-video-element video {
+    object-fit: {{ section.settings.object_fit }};
+  }
 {%- endstyle -%}
 
 {%- liquid
@@ -35,7 +39,7 @@
               style="padding-bottom: {{ 1 | divided_by: section.settings.image.aspect_ratio | times: 100 }}%;"
             {% endif %}
           >
-            {%- if section.settings.image != blank -%}
+            {%- if section.settings.media_type == 'image' and section.settings.image != blank -%}
               {%- if section.settings.image_behavior == 'ambient' or section.settings.image_behavior == 'zoom-in' -%}
                 {%- assign widths = '198, 432, 642, 900, 1284, 1800' -%}
                 {%- capture sizes -%}
@@ -54,6 +58,8 @@
                 | image_url: width: 1500
                 | image_tag: sizes: sizes, widths: widths, fetchpriority: fetch_priority
               }}
+            {%- elsif section.settings.media_type == 'video' and section.settings.video != blank -%}
+              {% render 'video-element', video: section.settings.video, object_fit: section.settings.object_fit, loop: section.settings.video_loop, controls: section.settings.video_controls %}
             {%- else -%}
               {{ 'detailed-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
             {%- endif -%}
@@ -116,9 +122,82 @@
   },
   "settings": [
     {
+      "type": "select",
+      "id": "media_type",
+      "options": [
+        {
+          "value": "image",
+          "label": "Image"
+        },
+        {
+          "value": "video",
+          "label": "Video"
+        }
+      ],
+      "default": "video",
+      "label": "Media Type"
+    },
+    {
       "type": "image_picker",
       "id": "image",
       "label": "t:sections.image-with-text.settings.image.label"
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Video"
+    },
+    {
+      "type": "select",
+      "id": "object_fit",
+      "options": [
+        {
+          "value": "cover",
+          "label": "Cover"
+        },
+        {
+          "value": "fill",
+          "label": "Fill"
+        },
+        {
+          "value": "contain",
+          "label": "Contain"
+        }
+      ],
+      "default": "cover",
+      "label": "Video Object Fit"
+    },
+    {
+      "type": "select",
+      "id": "video_loop",
+      "options": [
+        {
+          "value": "loop",
+          "label": "Loop"
+        },
+        {
+          "value": "no-loop",
+          "label": "No Loop"
+        }
+      ],
+      "default": "loop",
+      "label": "Video Loop"
+    },
+    {
+      "type": "select",
+      "id": "video_controls",
+      "options": [
+        {
+          "value": "show",
+          "label": "Show Controls"
+        },
+        {
+          "value": "hide",
+          "label": "Hide Controls"
+        }
+      ],
+      "default": "hide",
+      "label": "Video Controls"
     },
     {
       "type": "select",
